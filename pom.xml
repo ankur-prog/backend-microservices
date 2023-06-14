@@ -35,6 +35,7 @@
         </dependencies>
 
     </dependencyManagement>
+
     <packaging>pom</packaging>
     <build>
         <plugins>
