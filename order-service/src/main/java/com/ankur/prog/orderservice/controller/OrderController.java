@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/order")
 public class OrderController {
-private OrderService orderService;
+private final OrderService orderService;
 
     @PostMapping("/orders")
     public ResponseEntity<Order> placeOrder(@RequestBody OrderRequest orderRequest) {
