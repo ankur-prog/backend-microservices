@@ -1,15 +1,15 @@
 package com.ankur.prog.orderservice.controller;
 
 import com.ankur.prog.orderservice.dto.OrderRequest;
-import com.ankur.prog.orderservice.model.Order;
+
 import com.ankur.prog.orderservice.service.OrderService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor
 @RestController
@@ -18,9 +18,20 @@ public class OrderController {
 private final OrderService orderService;
 
     @PostMapping("/orders")
-    public ResponseEntity<Order> placeOrder(@RequestBody OrderRequest orderRequest) {
-        Order order = orderService.placeOrder(orderRequest);
-        return new ResponseEntity<>(order, HttpStatus.CREATED);
+    @ResponseStatus(HttpStatus.CREATED)
+    @CircuitBreaker(name = "inventory",fallbackMethod = "fallbackMethod")
+    @TimeLimiter(name = "inventory")
+    public CompletableFuture<String> placeOrder(@RequestBody OrderRequest orderRequest) {
+
+        return CompletableFuture.supplyAsync(()->orderService.placeOrder(orderRequest)) ;
+    }
+
+
+
+    // implement fallback method  for circuit breaker
+    public CompletableFuture<String> fallbackMethod(OrderRequest orderRequest,RuntimeException runtimeException)
+    {
+        return CompletableFuture.supplyAsync(()->"Something went wrong. Please try after some time. ") ;
     }
 
 }

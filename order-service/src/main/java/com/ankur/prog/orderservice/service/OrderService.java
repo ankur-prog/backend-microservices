@@ -26,10 +26,11 @@ import java.util.UUID;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final WebClient.Builder webClientBuilder;
-    public Order placeOrder(OrderRequest orderRequest) {
+
+    public String placeOrder(OrderRequest orderRequest) {
         Order order = new Order();
         order.setOrderNumber(UUID.randomUUID().toString());
-        List<OrderLineItems> orderLineItemsList =orderRequest.getOrderLineItemsdtoList()
+        List<OrderLineItems> orderLineItemsList = orderRequest.getOrderLineItemsdtoList()
                 .stream()
                 .map(this::mapToDto)
                 .toList();
@@ -37,26 +38,23 @@ public class OrderService {
         List<String> skuCodes = orderLineItemsList.stream()
                 .map(orderLineItems -> orderLineItems.getSkuCode())
                 .toList();
-        log.info("Number of skuCodes : {}",skuCodes.size());
-        // call inventory service to check product availability
-        InventoryResponse[] inventoryResponses=webClientBuilder.build().get()
-                .uri("http://inventory-service/api/inventory", uriBuilder -> uriBuilder.queryParam("skuCode",skuCodes).build())
+        log.info("Number of skuCodes : {}", skuCodes.size());
+        InventoryResponse[] inventoryResponses = webClientBuilder.build().get()
+                .uri("http://inventory-service/api/inventory", uriBuilder -> uriBuilder.queryParam("skuCode", skuCodes).build())
                 .retrieve()
                 .bodyToMono(InventoryResponse[].class)
                 .block();
-
-        boolean allProductInStock = Arrays.stream(inventoryResponses)
-                .allMatch(InventoryResponse::isInStock);
-        if(allProductInStock)
-        {
+        log.info("Number of sku codes in stock : {}", inventoryResponses.length);
+        boolean allProductInStock = (skuCodes.size() == inventoryResponses.length);
+        log.info("All product are in stock : {}", allProductInStock);
+        if (allProductInStock)
             orderRepository.save(order);
-            log.info("order placed successfully");
-        }
-        else
-            throw new IllegalArgumentException("Product is not in stock . Please try later.");
+        else throw new IllegalArgumentException("Sorry , All products are not in stock. Please try after sometime.");
 
-        return order;
+        return "Order Placed Successfully.";
     }
+
+
 
     private OrderLineItems mapToDto(OrderLineItemsDto orderLineItemsDto) {
         OrderLineItems orderLineItems = new OrderLineItems();
