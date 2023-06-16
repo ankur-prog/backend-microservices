@@ -3,18 +3,17 @@ package com.ankur.prog.orderservice.service;
 import com.ankur.prog.orderservice.dto.InventoryResponse;
 import com.ankur.prog.orderservice.dto.OrderLineItemsDto;
 import com.ankur.prog.orderservice.dto.OrderRequest;
+import com.ankur.prog.orderservice.event.OrderPlacedEvent;
 import com.ankur.prog.orderservice.model.Order;
 import com.ankur.prog.orderservice.model.OrderLineItems;
 import com.ankur.prog.orderservice.repository.OrderRepository;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,6 +26,8 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final WebClient.Builder webClientBuilder;
 
+    private final KafkaTemplate<String,OrderPlacedEvent> kafkaTemplate;
+
     public String placeOrder(OrderRequest orderRequest) {
         Order order = new Order();
         order.setOrderNumber(UUID.randomUUID().toString());
@@ -36,7 +37,7 @@ public class OrderService {
                 .toList();
         order.setOrderLineItemsList(orderLineItemsList);
         List<String> skuCodes = orderLineItemsList.stream()
-                .map(orderLineItems -> orderLineItems.getSkuCode())
+                .map(OrderLineItems::getSkuCode)
                 .toList();
         log.info("Number of skuCodes : {}", skuCodes.size());
         InventoryResponse[] inventoryResponses = webClientBuilder.build().get()
@@ -44,11 +45,14 @@ public class OrderService {
                 .retrieve()
                 .bodyToMono(InventoryResponse[].class)
                 .block();
+
         log.info("Number of sku codes in stock : {}", inventoryResponses.length);
         boolean allProductInStock = (skuCodes.size() == inventoryResponses.length);
         log.info("All product are in stock : {}", allProductInStock);
-        if (allProductInStock)
+        if (allProductInStock) {
             orderRepository.save(order);
+            kafkaTemplate.send("NotificationTopic", new OrderPlacedEvent(order.getOrderNumber()));
+        }
         else throw new IllegalArgumentException("Sorry , All products are not in stock. Please try after sometime.");
 
         return "Order Placed Successfully.";
