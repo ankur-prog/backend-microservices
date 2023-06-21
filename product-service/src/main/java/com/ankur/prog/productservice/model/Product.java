@@ -1,24 +1,26 @@
 package com.ankur.prog.productservice.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.annotation.Generated;
+import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
-@Document(value = "Product")
-@AllArgsConstructor
+@Entity
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-@Data
+@Table(name = "t_product")
 public class Product {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     private String productName;
     private String productCategory;
     private String brand;
@@ -34,6 +36,7 @@ public class Product {
     private Double displaySize;
     private Boolean faceID;
     private LocalDateTime lastupdatedDate;
+
 
 }
 
