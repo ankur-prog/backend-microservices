@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class ProductResponse {
-    private String id;
+    private Long id;
     private String productName;
     private String productCategory;
     private String brand;

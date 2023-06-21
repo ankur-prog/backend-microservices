@@ -1,15 +1,75 @@
 ---
-version: '3'
+version: '3.7'
 services:
+  ## Postgresql Docker Compose Config
+  postgres-order:
+    container_name: postgres-order
+    image: postgres
+    environment:
+      POSTGRES_DB: order-service
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      PGDATA: /data/postgres
+    volumes:
+      - ./postgres-order:/data/postgres
+    expose:
+      - "5431"
+    ports:
+      - "5431:5431"
+    command: -p 5431
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=kushwahaankur1993@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=ankur
+    ports:
+      - "5050:80"
+
+  mysql-inventory:
+    container_name: mysql-inventory
+    image: mysql
+    environment:
+      MYSQL_DATABASE: inventory-service
+      MYSQL_USER: ankur
+      MYSQL_PASSWORD: mysql
+      MYSQL_ROOT_PASSWORD: mysql
+    volumes:
+      - ./mysql-inventory:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+    restart: unless-stopped
+
+
+  postgres-product:
+    container_name: postgres-product
+    image: postgres
+    environment:
+      POSTGRES_DB: product-service
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      PGDATA: /data/postgres
+    volumes:
+      - ./postgres-product:/var/lib/postgresql/
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+
   zookeeper:
-    image: confluentinc/cp-zookeeper:7.3.2
+    image: confluentinc/cp-zookeeper:7.0.1
     container_name: zookeeper
+    ports:
+      - "2181:2181"
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
 
   broker:
-    image: confluentinc/cp-kafka:7.3.2
+    image: confluentinc/cp-kafka:7.0.1
     container_name: broker
     ports:
       - "9092:9092"
@@ -23,3 +83,80 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+
+  ## Eureka Server
+  discovery-server:
+    image: ankur03553/discovery-server:V7
+    container_name: discovery-server
+    pull_policy: always
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  api-gateway:
+    image: ankur03553/api-gateway:V7
+    container_name: api-gateway
+    pull_policy: always
+    ports:
+      - "8181:8080"
+    expose:
+      - "8181"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY= TRACE
+    depends_on:
+      - discovery-server
+
+  ## Product-Service Docker Compose Config
+
+
+  ## Order-Service Docker Compose Config
+  order-service:
+    container_name: order-service
+    pull_policy: always
+    image: ankur03553/order-service:V7
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-order:5431/order-service
+    depends_on:
+      - postgres-order
+      - broker
+      - discovery-server
+      - api-gateway
+
+  ## Inventory-Service Docker Compose Config
+  inventory-service:
+    container_name: inventory-service
+    pull_policy: always
+    image: ankur03553/inventory-service:V7
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-inventory:3306/inventory-service
+    depends_on:
+      - mysql-inventory
+      - discovery-server
+      - api-gateway
+  product-service:
+    container_name: product-service
+    pull_policy: always
+    image: ankur03553/product-service:V7
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-product:5432/product-service
+    depends_on:
+      - postgres-product
+      - discovery-server
+      - api-gateway
+  ## Notification-Service Docker Compose Config
+  notification-service:
+    container_name: notification-service
+    pull_policy: always
+    image: ankur03553/notification-service:V7
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - broker
+      - discovery-server
+      - api-gateway
+
