@@ -52,7 +52,7 @@ public class ProductService {
         return productRepository.findByProductCategoryAndBrandIgnoreCase(productCategory, brandName);
     }
 
-    public boolean updatePrice(String id, Double price) {
+    public boolean updatePrice(Long id, Double price) {
         Optional<Product> productOptional = productRepository.findById(id);
         if (productOptional.isPresent()) {
             Product product = productOptional.get();
@@ -64,7 +64,7 @@ public class ProductService {
 
     }
 
-    public boolean deleteProduct(String id) {
+    public boolean deleteProduct(Long id) {
         if (productRepository.existsById(id)) {
             productRepository.deleteById(id);
             return true;
