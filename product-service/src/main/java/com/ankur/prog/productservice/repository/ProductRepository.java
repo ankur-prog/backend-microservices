@@ -7,15 +7,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 
-public interface ProductRepository extends JpaRepository<Product,String> {
+public interface ProductRepository extends JpaRepository<Product,Long> {
 
-    List<ProductResponse> findByReleaseDateBetween(LocalDate startDate, LocalDate endDate);
+    List<Product> findByReleaseDateBetween(LocalDate startDate, LocalDate endDate);
 
-    List<ProductResponse> findByBrandIgnoreCase(String brandName);
+    Optional<List<Product>> findByBrandIgnoreCase(String brandName);
 
-    List<ProductResponse> findByProductCategoryAndBrandIgnoreCase(String productCategory, String brandName);
+    List<Product> findByProductCategoryAndBrandIgnoreCase(String productCategory, String brandName);
 
 
 }

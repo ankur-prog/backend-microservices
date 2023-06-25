@@ -36,23 +36,29 @@ public class ProductService {
     }
 
     private ProductResponse mapToProductResponse(Product product) {
-        return ProductResponse.builder().id(product.getId()).productCategory(product.getProductCategory()).productName(product.getProductName()).brand(product.getBrand()).exchangePossible(product.getExchangePossible()).battery(product.getBattery()).displaySize(product.getDisplaySize()).origin(product.getOrigin()).price(product.getPrice()).currency(product.getCurrency()).releaseDate(product.getReleaseDate()).faceID(product.getFaceID()).touchId(product.getTouchId()).description(product.getDescription()).build();
+        return ProductResponse.builder().id(product.getId()).productCategory(product.getProductCategory()).productName(product.getProductName()).brand(product.getBrand()).exchangePossible(product.getExchangePossible()).battery(product.getBattery()).displaySize(product.getDisplaySize()).origin(product.getOrigin()).price(product.getPrice()).currency(product.getCurrency()).releaseDate(product.getReleaseDate()).faceID(product.getFaceID()).touchId(product.getTouchId()).description(product.getDescription()).lastupdatedDate(product.getLastupdatedDate()).build();
     }
 
     public List<ProductResponse> getAllProductsBetweenDates(LocalDate startDate, LocalDate endDate) {
-        return productRepository.findByReleaseDateBetween(startDate, endDate);
+        List<Product> products = productRepository.findByReleaseDateBetween(startDate, endDate);
+        return products.stream().map(this::mapToProductResponse).collect(Collectors.toList());
     }
 
     public List<ProductResponse> getProductByBrand(String brandName) {
-        return productRepository.findByBrandIgnoreCase(brandName);
+        Optional<List<Product>> products = productRepository.findByBrandIgnoreCase(brandName);
+
+        List<Product> productList = products.get();
+        return productList.stream().map(this::mapToProductResponse).collect(Collectors.toList());
+
     }
 
     public List<ProductResponse> getProductByProductCategoryAndBrandName(String productCategory, String brandName) {
 
-        return productRepository.findByProductCategoryAndBrandIgnoreCase(productCategory, brandName);
+        List<Product> products = productRepository.findByProductCategoryAndBrandIgnoreCase(productCategory, brandName);
+        return products.stream().map(this::mapToProductResponse).collect(Collectors.toList());
     }
 
-    public boolean updatePrice(String id, Double price) {
+    public boolean updatePrice(Long id, Double price) {
         Optional<Product> productOptional = productRepository.findById(id);
         if (productOptional.isPresent()) {
             Product product = productOptional.get();
@@ -64,7 +70,7 @@ public class ProductService {
 
     }
 
-    public boolean deleteProduct(String id) {
+    public boolean deleteProduct(Long id) {
         if (productRepository.existsById(id)) {
             productRepository.deleteById(id);
             return true;

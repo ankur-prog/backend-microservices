@@ -19,7 +19,7 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
 public class ProductController {
 
@@ -78,7 +78,7 @@ public class ProductController {
     // 6. update product
     @PutMapping("/{id}/price")
     public ResponseEntity<String> updatePrice(
-            @PathVariable("id") String id,@RequestBody Double price){
+            @PathVariable("id") Long id,@RequestBody Double price){
         Boolean updatePrice = productService.updatePrice(id,price);
         if(updatePrice)
         {
@@ -90,7 +90,7 @@ public class ProductController {
 
     // 7 . delete product
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteProduct(@PathVariable("id") String id)
+    public ResponseEntity<String> deleteProduct(@PathVariable("id") Long id)
     {
         Boolean deleteProduct = productService.deleteProduct(id);
         if(deleteProduct)
