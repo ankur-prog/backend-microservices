@@ -1,7 +1,6 @@
 package com.ankur.prog.productservice.repository;
 
 
-import com.ankur.prog.productservice.dto.ProductResponse;
 import com.ankur.prog.productservice.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 
