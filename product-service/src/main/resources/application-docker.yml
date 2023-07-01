@@ -1,0 +1,24 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres-order:5432/product_service
+    driverClassName: org.postgresql.Driver
+    username: postgres
+    password: admin
+
+  application:
+    name: product-service
+  jpa:
+    showSql: true
+    properties:
+      hibernate:
+        format_sql : true
+        ddl-auto: create
+    databasePlatform: org.hibernate.dialect.PostgreSQLDialect
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-server:8761/eureka
+

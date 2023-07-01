@@ -86,7 +86,7 @@ services:
 
   ## Eureka Server
   discovery-server:
-    image: ankur03553/discovery-server:V7
+    image: ankur03553/discovery-server:V8
     container_name: discovery-server
     pull_policy: always
     ports:
@@ -95,7 +95,7 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
 
   api-gateway:
-    image: ankur03553/api-gateway:V7
+    image: ankur03553/api-gateway:V8
     container_name: api-gateway
     pull_policy: always
     ports:
@@ -115,7 +115,7 @@ services:
   order-service:
     container_name: order-service
     pull_policy: always
-    image: ankur03553/order-service:V7
+    image: ankur03553/order-service:V8
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-order:5431/order-service
@@ -129,7 +129,7 @@ services:
   inventory-service:
     container_name: inventory-service
     pull_policy: always
-    image: ankur03553/inventory-service:V7
+    image: ankur03553/inventory-service:V8
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-inventory:3306/inventory-service
@@ -140,7 +140,7 @@ services:
   product-service:
     container_name: product-service
     pull_policy: always
-    image: ankur03553/product-service:V7
+    image: ankur03553/product-service:V8
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-product:5432/product-service
@@ -152,7 +152,7 @@ services:
   notification-service:
     container_name: notification-service
     pull_policy: always
-    image: ankur03553/notification-service:V7
+    image: ankur03553/notification-service:V8
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
