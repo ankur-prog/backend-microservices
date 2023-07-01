@@ -1,7 +1,7 @@
 package com.ankur.prog.productservice.repository;
 
 
-import com.ankur.prog.productservice.model.Product;
+import com.ankur.prog.productservice.domain.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;

@@ -14,11 +14,12 @@ spring:
     properties:
       hibernate:
         format_sql : true
-        ddl-auto: create
+        ddl-auto: none
     databasePlatform: org.hibernate.dialect.PostgreSQLDialect
 
 eureka:
   client:
     serviceUrl:
       defaultZone: http://discovery-server:8761/eureka
+
 
