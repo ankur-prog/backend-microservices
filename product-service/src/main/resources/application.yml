@@ -1,0 +1,19 @@
+server:
+  port: 9098
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/product-services
+    driverClassName: org.postgresql.Driver
+    username: postgres
+    password: admin
+
+  jpa:
+    showSql: true
+    properties:
+      hibernate:
+        formatSql: true
+        ddl-auto: create
+    databasePlatform: org.hibernate.dialect.PostgreSQLDialect
+
+  application:
+    name : Product Service
