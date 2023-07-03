@@ -2,7 +2,7 @@ package com.ankur.prog.productservice.service;
 
 import com.ankur.prog.productservice.dto.ProductRequest;
 import com.ankur.prog.productservice.dto.ProductResponse;
-import com.ankur.prog.productservice.model.Product;
+import com.ankur.prog.productservice.domain.Product;
 import com.ankur.prog.productservice.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

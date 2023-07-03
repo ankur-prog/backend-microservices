@@ -114,7 +114,7 @@ services:
   ## Order-Service Docker Compose Config
   order-service:
     container_name: order-service
-    pull_policy: always
+    pull_policy: never
     image: ankur03553/order-service:V8
     environment:
       - SPRING_PROFILES_ACTIVE=docker
@@ -128,7 +128,7 @@ services:
   ## Inventory-Service Docker Compose Config
   inventory-service:
     container_name: inventory-service
-    pull_policy: always
+    pull_policy: never
     image: ankur03553/inventory-service:V8
     environment:
       - SPRING_PROFILES_ACTIVE=docker
@@ -151,7 +151,7 @@ services:
   ## Notification-Service Docker Compose Config
   notification-service:
     container_name: notification-service
-    pull_policy: always
+    pull_policy: never
     image: ankur03553/notification-service:V8
     environment:
       - SPRING_PROFILES_ACTIVE=docker
