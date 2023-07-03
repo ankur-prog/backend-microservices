@@ -10,11 +10,8 @@ spring:
   application:
     name: product-service
   jpa:
-    showSql: true
-    properties:
-      hibernate:
-        format_sql : true
-        ddl-auto: none
+    hibernate:
+      ddlAuto: create
     databasePlatform: org.hibernate.dialect.PostgreSQLDialect
 
 eureka:

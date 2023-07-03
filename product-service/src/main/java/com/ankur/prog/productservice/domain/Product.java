@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
+ * @author Ankur Kushwaha
  *Product contains all attributes of a product . Table name is t_product.
  */
 

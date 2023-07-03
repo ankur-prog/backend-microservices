@@ -12,11 +12,11 @@ spring:
     properties:
       hibernate:
         formatSql: true
-        ddl-auto: none
+        ddl-auto: update
     databasePlatform: org.hibernate.dialect.PostgreSQLDialect
 
   application:
-    name : Product Service
+    name : product-service
 
 
 
