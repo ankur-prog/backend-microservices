@@ -47,6 +47,6 @@ jobs:
       - name: Build and publish Docker image
         run: mvn clean compile jib:build --file pom.xml
         env:
-          DOCKER_USERNAME: ankur03553
-          DOCKER_PASSWORD: Naina@1996
+          DOCKER_USERNAME: "ankur03553"
+          DOCKER_PASSWORD: "Naina@1996"
       
