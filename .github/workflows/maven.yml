@@ -29,7 +29,7 @@ jobs:
       - name: clean and compile
         run: mvn clean --file pom.xml
 
-  build:
+  test:
     needs: [cleancompile]
     runs-on: ubuntu-latest
 
@@ -44,9 +44,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Build and publish Docker image
-        run: mvn clean compile jib:build --file pom.xml
-        env:
-          DOCKER_USERNAME: "ankur03553"
-          DOCKER_PASSWORD: "Naina@1996"
+      - name: run test cases
+        run: mvn test --file pom.xml
+        
       
