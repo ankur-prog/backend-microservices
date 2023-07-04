@@ -27,7 +27,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: clean and compile
-        run: mvn clean compile --file pom.xml
+        run: mvn clean --file pom.xml
 
   build:
     needs: [cleancompile]
