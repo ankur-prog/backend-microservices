@@ -39,12 +39,13 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          java-version: 17
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
 
       - name: Build and publish Docker image
-        run: mvn jib:build
+        run: mvn jib:build --file pom.xml
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
       
-
