@@ -77,7 +77,7 @@
 
                 <configuration>
                     <from>
-                        <image>eclipse-temurin:17.0.4.1_1-jre</image>
+                        <image>eclipse-temurin:11</image>
                     </from>
                     <to>
                         <image>registry.hub.docker.com/ankur03553/${project.artifactId}:V8</image>
