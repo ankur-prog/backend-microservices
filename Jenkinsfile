@@ -26,7 +26,7 @@ pipeline {
     stages {
         stage('Requirements') {
             steps {
-                echo 'Installing system requirements ...'
+                echo 'Installing system requirementss ...'
             }
         }
         stage('Build') {
