@@ -1,9 +1,9 @@
 pipeline {
     agent any
     parameters {
-        choice(name: 'NUMBER',
-            choices: [10,20,30,40,50,60,70,80,90],
-            description: 'Select the value for F(n) for the Fibonnai sequence.')
+        choice(name: 'ENVIRONMENT',
+            choices: [DEV,STAGING,PRODUCTION],
+            description: 'Select the environment to deploy.')
     }
     options {
         buildDiscarder(logRotator(daysToKeepStr: '10', numToKeepStr: '10'))
@@ -16,23 +16,23 @@ pipeline {
     stages {
         stage('Make executable') {
             steps {
-                sh('chmod +x ./scripts/fibonacci.sh')
+                sh('chmod +x ./scripts/build.sh')
             }
         }
         stage('Relative path') {
             steps {
-                sh("./scripts/fibonacci.sh ${env.NUMBER}")
+                sh("./scripts/build.sh ${env.ENVIRONMENT}")
             }
         }
         stage('Full path') {
             steps {
-                sh("${env.WORKSPACE}/scripts/fibonacci.sh ${env.NUMBER}")
+                sh("${env.WORKSPACE}/scripts/build.sh ${env.ENVIRONMENT}")
             }
         }
         stage('Change directory') {
             steps {
                 dir("${env.WORKSPACE}/scripts"){
-                    sh("./fibonacci.sh ${env.NUMBER}")
+                    sh("./build.sh ${env.ENVIRONMENT}")
                 }
             }
         }
